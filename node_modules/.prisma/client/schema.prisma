@@ -24,7 +24,7 @@ model User {
 model Post {
   id       Int       @id @default(autoincrement())
   content  String
-  User     User      @relation(fields: [userId], references: [id])
+  users    User      @relation(fields: [userId], references: [id])
   userId   Int
   comments Comment[]
   created  DateTime  @default(now())
@@ -33,7 +33,7 @@ model Post {
 model Comment {
   id      Int      @id @default(autoincrement())
   content String
-  User    User     @relation(fields: [userId], references: [id])
+  users   User     @relation(fields: [userId], references: [id])
   userId  Int
   Post    Post     @relation(fields: [postId], references: [id])
   postId  Int
