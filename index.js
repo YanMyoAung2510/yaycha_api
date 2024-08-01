@@ -1,18 +1,26 @@
-const express = require("express");
-const app = new express();
+import express from "express";
+import cors from "cors";
+// import { contentRouter } from "./routers/content.js";
+import contentRouter from "./routers/content.js";
+import userRouter from "./routers/user.js";
+import prisma from "./prismaClient.js";
 
-const prisma = require("./prismaClient");
+const app = express();
 
-const cors = require("cors");
 app.use(cors());
 
-const { contentRouter } = require("./routers/content");
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/content", contentRouter);
+
+app.use("/", userRouter);
 
 app.get("/info", (req, res) => {
   res.json({ msg: "Yaycha API" });
 });
+
 const server = app.listen(8000, () => {
   console.log("Yaycha API started at 8000...");
 });
