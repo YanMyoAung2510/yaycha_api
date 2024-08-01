@@ -1,9 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
-const { faker } = require("@faker-js/faker");
-const bcrypt = require("bcrypt");
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
+import { hash } from "bcrypt";
 const prisma = new PrismaClient();
 async function UserSeeder() {
-  const password = await bcrypt.hash("password", 10);
+  const password = await hash("password", 10);
   console.log("User seeding started...");
   for (let i = 0; i < 10; i++) {
     const firstName = faker.person.firstName();
@@ -19,4 +19,4 @@ async function UserSeeder() {
   }
   console.log("User seeding done.");
 }
-module.exports = { UserSeeder };
+export default UserSeeder;

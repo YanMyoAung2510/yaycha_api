@@ -1,8 +1,8 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-const { UserSeeder } = require("./UserSeeder");
-const { PostSeeder } = require("./PostSeeder");
-const { CommentSeeder } = require("./CommentSeeder");
+import UserSeeder from "./UserSeeder.js";
+import PostSeeder from "./PostSeeder.js";
+import CommentSeeder from "./CommentSeeder.js";
 async function main() {
   try {
     await UserSeeder();

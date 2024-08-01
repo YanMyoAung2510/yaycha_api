@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const { faker } = require("@faker-js/faker");
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 async function PostSeeder() {
   const data = [];
@@ -12,4 +12,4 @@ async function PostSeeder() {
   await prisma.post.createMany({ data });
   console.log("Post seeding done.");
 }
-module.exports = { PostSeeder };
+export default PostSeeder;

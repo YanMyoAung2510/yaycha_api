@@ -51,5 +51,19 @@ router.post("/users", async (req, res) => {
   res.json(user);
 });
 
+router.delete("/users/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.post.deleteMany({ where: { userId: Number(id) } });
+    await prisma.comment.deleteMany({ where: { userId: Number(id) } });
+    await prisma.user.delete({ where: { id: Number(id) } });
+
+    res.sendStatus(204);
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+});
+
 const userRouter = router;
 export default userRouter;
