@@ -1,9 +1,11 @@
 import express from "express";
 import prisma from "../prismaClient.js"; // Add .js extension
-import { hash as bcrypt } from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
+
+// get users
 
 router.get("/users", async (req, res) => {
   try {
@@ -21,6 +23,8 @@ router.get("/users", async (req, res) => {
   }
 });
 
+// show user
+
 router.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -37,6 +41,8 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
+// create user
+
 router.post("/users", async (req, res) => {
   const { name, username, bio, password } = req.body;
   if (!name || !username || !password) {
@@ -44,12 +50,14 @@ router.post("/users", async (req, res) => {
       .status(400)
       .json({ msg: "name, username and password required" });
   }
-  const hash = await bcrypt(password, 10);
+  const hash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: { name, username, password: hash, bio },
   });
   res.json(user);
 });
+
+// delete user
 
 router.delete("/users/:id", async (req, res) => {
   const { id } = req.params;
@@ -65,19 +73,22 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
+// login
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ msg: "username and password is required" });
   }
-  const user = await prisma.user.findUnique;
-  ({
+  const user = await prisma.user.findUnique({
     where: { username },
   });
   if (user) {
     if (bcrypt.compare(password, user.password)) {
       const token = jwt.sign(user, process.env.JWT_SECRET);
+      console.log(token);
+
       return res.json({ token, user });
     }
   }
