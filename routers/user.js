@@ -42,7 +42,7 @@ router.get("/users/:id", async (req, res) => {
 });
 
 // create user
-
+//just for pushing to github nth mean this comment is
 router.post("/users", async (req, res) => {
   const { name, username, bio, password } = req.body;
   if (!name || !username || !password) {
