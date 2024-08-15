@@ -13,8 +13,10 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+// post router
 app.use("/content", contentRouter);
 
+// user router
 app.use("/", userRouter);
 
 app.get("/info", (req, res) => {
