@@ -1,12 +1,12 @@
 import express from "express";
 import prisma from "../prismaClient.js"; // Add .js extension
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// get users
-
+// index
 router.get("/users", async (req, res) => {
   try {
     const data = await prisma.user.findMany({
@@ -23,8 +23,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// show user
-
+// show
 router.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -41,8 +40,7 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-// create user
-//just for pushing to github nth mean this comment is
+// create
 router.post("/users", async (req, res) => {
   const { name, username, bio, password } = req.body;
   if (!name || !username || !password) {
@@ -50,15 +48,14 @@ router.post("/users", async (req, res) => {
       .status(400)
       .json({ msg: "name, username and password required" });
   }
-  const hash = await bcrypt.hash(password, 10);
+  const hash = await bcrypt(password, 10);
   const user = await prisma.user.create({
     data: { name, username, password: hash, bio },
   });
   res.json(user);
 });
 
-// delete user
-
+// delete
 router.delete("/users/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -73,27 +70,66 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
-// login
+// auth login
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ msg: "username and password is required" });
+    return res.status(400).json({ msg: "username and password required" });
   }
+
   const user = await prisma.user.findUnique({
     where: { username },
   });
-  if (user) {
-    if (bcrypt.compare(password, user.password)) {
-      const token = jwt.sign(user, process.env.JWT_SECRET);
-      console.log(token);
 
+  if (user) {
+    /**
+     *? this is to short of long code just by adding await to resolve compare process before continue
+     * */
+
+    if (await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign(user, process.env.JWT_SECRET);
       return res.json({ token, user });
     }
   }
-  res.status(401).json({ msg: "Incorrect username or password" });
+
+  res.status(401).json({ msg: "incorrect username or password" });
 });
+
+/**
+ *?  this is to understand how it's work long code bcrypt
+
+ */
+
+// router.post("/login", async (req, res) => {
+//   const { username, password } = req.body;
+
+//   if (!username || !password) {
+//     return res.status(400).json({ msg: "username and password is required" });
+//   }
+
+//   const user = await prisma.user.findFirst({
+//     where: { username: username },
+//   });
+
+//   if (user) {
+//     // console.log(await bcrypt.compare(password, user.password));
+
+//     bcrypt.compare(password, user.password, (err, result) => {
+//       if (err) {
+//         return res.status(500).json({ msg: "Something went wrong" });
+//       }
+
+//       if (result) {
+//         const token = jwt.sign(user, process.env.JWT_SECRET);
+//         return res.json({ token, user });
+//       } else {
+//         return res.status(401).json({ msg: "Incorrect username or password" });
+//       }
+//     });
+//   }
+// });
 
 const userRouter = router;
 export default userRouter;
