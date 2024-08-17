@@ -48,7 +48,7 @@ router.post("/users", async (req, res) => {
       .status(400)
       .json({ msg: "name, username and password required" });
   }
-  const hash = await bcrypt(password, 10);
+  const hash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: { name, username, password: hash, bio },
   });
@@ -100,36 +100,35 @@ router.post("/login", async (req, res) => {
 /**
  *?  this is to understand how it's work long code bcrypt
 
+*! router.post("/login", async (req, res) => {
+*!   const { username, password } = req.body;
+
+*!   if (!username || !password) {
+*!     return res.status(400).json({ msg: "username and password is required" });
+*!   }
+
+*!   const user = await prisma.user.findFirst({
+*!     where: { username: username },
+*!   });
+
+*!   if (user) {
+
+*!     bcrypt.compare(password, user.password, (err, result) => {
+*!       if (err) {
+*!         return res.status(500).json({ msg: "Something went wrong" });
+*!       }
+
+*!       if (result) {
+*!         const token = jwt.sign(user, process.env.JWT_SECRET);
+*!         return res.json({ token, user });
+*!       } else {
+*!         return res.status(401).json({ msg: "Incorrect username or password" });
+*!       }
+*!     });
+*!   }
+*! });
+
  */
-
-// router.post("/login", async (req, res) => {
-//   const { username, password } = req.body;
-
-//   if (!username || !password) {
-//     return res.status(400).json({ msg: "username and password is required" });
-//   }
-
-//   const user = await prisma.user.findFirst({
-//     where: { username: username },
-//   });
-
-//   if (user) {
-//     // console.log(await bcrypt.compare(password, user.password));
-
-//     bcrypt.compare(password, user.password, (err, result) => {
-//       if (err) {
-//         return res.status(500).json({ msg: "Something went wrong" });
-//       }
-
-//       if (result) {
-//         const token = jwt.sign(user, process.env.JWT_SECRET);
-//         return res.json({ token, user });
-//       } else {
-//         return res.status(401).json({ msg: "Incorrect username or password" });
-//       }
-//     });
-//   }
-// });
 
 const userRouter = router;
 export default userRouter;
