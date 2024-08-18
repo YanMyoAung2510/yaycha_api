@@ -3,6 +3,7 @@ import prisma from "../prismaClient.js"; // Add .js extension
 // import bcrypt from "bcrypt";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { auth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -129,6 +130,11 @@ router.post("/login", async (req, res) => {
 *! });
 
  */
+
+router.get("/verify", auth, async (req, res) => {
+  const user = res.locals.user;
+  res.json(user);
+});
 
 const userRouter = router;
 export default userRouter;
