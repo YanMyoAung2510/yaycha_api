@@ -47,7 +47,7 @@ export const isOwner = (type) => {
       const comment = await prisma.comment.findUnique({
         where: { id: Number(id) },
         include: {
-          post: true,
+          Post: true,
         },
       });
       if (comment.userId == user.id || comment.post.userId == user.id)

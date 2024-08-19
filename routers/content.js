@@ -53,7 +53,7 @@ router.post("/posts", auth, async (req, res) => {
     },
   });
 
-  const data = await prisma.post.findUnique({
+  const data = await prisma.post.findFirst({
     where: { id: Number(post.id) },
     include: {
       users: true,
@@ -111,6 +111,8 @@ router.post("/comments", auth, async (req, res) => {
 
 router.delete("/comments/:id", auth, isOwner("comment"), async (req, res) => {
   const { id } = req.params;
+  console.log("this is id " + id);
+
   await prisma.comment.delete({ where: { id: Number(id) } });
   res.sendStatus(200);
 });
