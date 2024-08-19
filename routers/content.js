@@ -56,9 +56,9 @@ router.post("/posts", auth, async (req, res) => {
   const data = await prisma.post.findUnique({
     where: { id: Number(post.id) },
     include: {
-      user: true,
+      users: true,
       comments: {
-        include: { user: true },
+        include: { users: true },
       },
     },
   });
@@ -91,16 +91,13 @@ router.delete("/posts/:id", auth, isOwner("post"), async (req, res) => {
   res.sendStatus(200);
 });
 
-router.post("comments", auth, async (req, res) => {
+router.post("/comments", auth, async (req, res) => {
   const { content, postId } = req.body;
-
   if (!content || !postId) {
     return;
     res.status(400).json({ msg: "content and postId required" });
   }
-
   const user = res.locals.user;
-
   const comment = await prisma.comment.create({
     data: {
       content,
@@ -108,9 +105,7 @@ router.post("comments", auth, async (req, res) => {
       postId: Number(postId),
     },
   });
-
   comment.users = user;
-
   res.json(comment);
 });
 
