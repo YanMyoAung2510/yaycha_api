@@ -25,14 +25,15 @@ router.get("/posts", async (req, res) => {
       include: {
         users: true,
         comments: true,
+        PostLike: true,
       },
       orderBy: { id: "desc" },
       take: 20,
     });
-    // res.json(data);
-    setTimeout(() => {
-      res.json(data);
-    }, 0);
+    res.json(data);
+    // setTimeout(() => {
+    //   res.json(data);
+    // }, 0);
   } catch (e) {
     res.status(500).json({ error: e });
   }
@@ -58,7 +59,7 @@ router.post("/posts", auth, async (req, res) => {
     include: {
       users: true,
       comments: {
-        include: { users: true },
+        include: { users: true, CommentLike: true },
       },
     },
   });
@@ -74,8 +75,9 @@ router.get("/posts/:id", async (req, res) => {
       include: {
         users: true,
         comments: {
-          include: { users: true },
+          include: { users: true, CommentLike: true },
         },
+        PostLike: true,
       },
     });
     res.json(data);
@@ -111,7 +113,6 @@ router.post("/comments", auth, async (req, res) => {
 
 router.delete("/comments/:id", auth, isOwner("comment"), async (req, res) => {
   const { id } = req.params;
-  console.log("this is id " + id);
 
   await prisma.comment.delete({ where: { id: Number(id) } });
   res.sendStatus(200);

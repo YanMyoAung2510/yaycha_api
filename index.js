@@ -4,6 +4,7 @@ import cors from "cors";
 import contentRouter from "./routers/content.js";
 import userRouter from "./routers/user.js";
 import prisma from "./prismaClient.js";
+import reactRouter from "./routers/reaction.js";
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use("/content", contentRouter);
 
 // user router
 app.use("/", userRouter);
+
+app.use("/reaction", reactRouter);
 
 app.get("/info", (req, res) => {
   res.json({ msg: "Yaycha API" });
