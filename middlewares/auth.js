@@ -9,7 +9,6 @@ import prisma from "../prismaClient.js";
  */
 export const auth = (req, res, next) => {
   const { authorization } = req.headers;
-  console.log(authorization);
 
   const token = authorization && authorization.split(" ")[1];
   if (!token) {

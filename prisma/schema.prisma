@@ -59,7 +59,7 @@ model PostLike {
 model CommentLike {
   id        Int      @id @default(autoincrement())
   comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId Int
   userId    Int
   created   DateTime @default(now())

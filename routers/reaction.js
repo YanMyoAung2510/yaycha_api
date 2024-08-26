@@ -87,6 +87,8 @@ router.get("/like/comments/:id", async (req, res) => {
 router.post("/like/comments/:id", auth, async (req, res) => {
   const { id } = req.params;
   const user = res.locals.user;
+  console.log(id, user.id);
+
   const like = await prisma.commentLike.create({
     data: {
       commentId: Number(id),
