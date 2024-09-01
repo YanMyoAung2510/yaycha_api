@@ -3,21 +3,31 @@ import prisma from "../prismaClient.js"; // Add .js extension
 import { auth, isOwner } from "../middlewares/auth.js";
 const router = express.Router();
 
-// router.get("/posts", async (req, res) => {
-//   try {
-//     const data = await prisma.post.findMany({
-//       include: {
-//         users: true,
-//         comments: true,
-//       },
-//       orderBy: { id: "desc" },
-//       take: 20,
-//     });
-//     res.json(data);
-//   } catch (e) {
-//     res.status(500).json({ error: e });
-//   }
-// });
+//following posts
+router.get("/following/posts", auth, async (req, res) => {
+  const user = res.locals.user;
+  const follow = await prisma.follow.findMany({
+    where: {
+      followerId: Number(user.id),
+    },
+  });
+  const users = follow.map((item) => item.followingId);
+  const data = await prisma.post.findMany({
+    where: {
+      userId: {
+        in: users,
+      },
+    },
+    include: {
+      users: true,
+      comments: true,
+      PostLike: true,
+    },
+    orderBy: { id: "desc" },
+    take: 20,
+  });
+  res.json(data);
+});
 
 router.get("/posts", async (req, res) => {
   try {
