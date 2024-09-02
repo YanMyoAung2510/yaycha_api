@@ -5,6 +5,7 @@ import contentRouter from "./routers/content.js";
 import userRouter from "./routers/user.js";
 import prisma from "./prismaClient.js";
 import reactRouter from "./routers/reaction.js";
+import { notiRouter } from "./routers/noti.js";
 
 const app = express();
 
@@ -22,7 +23,9 @@ app.use("/", userRouter);
 
 app.use("/reaction", reactRouter);
 
-app.get("/info", (req, res) => {
+app.use("/noti", notiRouter);
+
+app.get("/", (req, res) => {
   res.json({ msg: "Yaycha API" });
 });
 
