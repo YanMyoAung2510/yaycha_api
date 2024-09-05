@@ -1,6 +1,7 @@
 import express from "express";
 import prisma from "../prismaClient.js"; // Add .js extension
 import { auth, isOwner } from "../middlewares/auth.js";
+import { addNoti } from "./noti.js";
 const router = express.Router();
 
 //following posts
@@ -118,6 +119,14 @@ router.post("/comments", auth, async (req, res) => {
     },
   });
   comment.users = user;
+
+  await addNoti({
+    type: "comment",
+    content: "reply your post",
+    postId,
+    userId: user.id,
+  });
+
   res.json(comment);
 });
 

@@ -23,7 +23,7 @@ app.use("/", userRouter);
 
 app.use("/reaction", reactRouter);
 
-app.use("/noti", notiRouter);
+app.use("/", notiRouter);
 
 app.get("/", (req, res) => {
   res.json({ msg: "Yaycha API" });

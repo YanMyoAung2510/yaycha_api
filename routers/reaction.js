@@ -1,6 +1,7 @@
 import prisma from "../prismaClient.js"; // Add .js extension
 import express from "express";
 import { auth } from "../middlewares/auth.js";
+import { addNoti } from "./noti.js";
 
 const router = express.Router();
 
@@ -25,7 +26,6 @@ router.get("/like/posts/:id", async (req, res) => {
       },
     },
   });
-  console.log(data);
 
   res.json(data);
 });
@@ -42,6 +42,14 @@ router.post("/like/posts/:id", auth, async (req, res) => {
       userId: Number(user.id),
     },
   });
+
+  await addNoti({
+    type: "like",
+    content: "likes your post",
+    postId: id,
+    userId: user.id,
+  });
+
   res.json({ like });
 });
 
@@ -95,6 +103,14 @@ router.post("/like/comments/:id", auth, async (req, res) => {
       userId: Number(user.id),
     },
   });
+
+  await addNoti({
+    type: "like",
+    content: "likes your comment",
+    postId: id,
+    userId: user.id,
+  });
+
   res.json(like);
 });
 

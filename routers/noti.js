@@ -47,7 +47,7 @@ router.put("/notis/read/:id", auth, async (req, res) => {
 
 //create noti
 
-const addNoti = async ({ type, content, postId, userId }) => {
+export const addNoti = async ({ type, content, postId, userId }) => {
   const post = await prisma.post.findFirst({
     where: {
       id: Number(postId),
@@ -65,5 +65,22 @@ const addNoti = async ({ type, content, postId, userId }) => {
   });
   //   return noti;
 };
+
+// async function addNoti({ type, content, postId, userId }) {
+//   const post = await prisma.post.findUnique({
+//     where: {
+//       id: Number(postId),
+//     },
+//   });
+//   if (post.userId == userId) return false;
+//   return await prisma.noti.create({
+//     data: {
+//       type,
+//       content,
+//       postId: Number(postId),
+//       userId: Number(userId),
+//     },
+//   });
+// }
 
 export { router as notiRouter };
