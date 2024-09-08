@@ -1,6 +1,8 @@
 import prisma from "../prismaClient.js"; // Add .js extension
 import express from "express";
 import { auth } from "../middlewares/auth.js";
+import { clients, wsRouter } from "./ws.js";
+import expressWs from "express-ws";
 
 const router = express.Router();
 
@@ -28,6 +30,7 @@ router.put("/notis/read", auth, async (req, res) => {
       posts: {
         userId: Number(user.id),
       },
+      j,
     },
     data: {
       read: true,
@@ -54,6 +57,13 @@ export const addNoti = async ({ type, content, postId, userId }) => {
     },
   });
   if (post.userId === userId) return false;
+
+  clients.map((client) => {
+    if (client.userId == post.userId) {
+      client.ws.send(JSON.stringify({ event: "notis" }));
+      console.log(`WS: event sent to ${client.userId}: notis`);
+    }
+  });
 
   const noti = await prisma.noti.create({
     data: {

@@ -34,7 +34,6 @@ export const isOwner = (type) => {
   return async (req, res, next) => {
     const { id } = req.params;
     const user = res.locals.user;
-    console.log(id, user);
 
     if (type == "post") {
       const post = await prisma.post.findUnique({

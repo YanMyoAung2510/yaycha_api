@@ -6,10 +6,17 @@ import userRouter from "./routers/user.js";
 import prisma from "./prismaClient.js";
 import reactRouter from "./routers/reaction.js";
 import { notiRouter } from "./routers/noti.js";
+import expressWs from "express-ws";
+import { wsRouter } from "./routers/ws.js";
 
 const app = express();
 
+expressWs(app);
+
 app.use(cors());
+
+// app.use("/", wsRouter);
+app.use("/ws", wsRouter);
 
 app.use(express.json());
 
